@@ -14,34 +14,42 @@ Field Traceability Map
 Plain-language: A diagram showing, for every piece of data you need in a final output, exactly where it first entered the system and every place it got changed along the way — like tracing a single ingredient back through every step of a recipe to know exactly which stage introduced it.
 In VRYOH: You never built this as a formal diagram — you have it scattered across memory as prose (e.g., "ALA Record ID travels through all 6 agent NocoDB tables as common traceability field"). That sentence IS a fragment of a Field Traceability Map. The checklist wants that made visual and complete before building starts.
 Why it matters: Without it, you discover missing fields the hard way — mid-build, when an agent needs data that was never captured upstream. This happened repeatedly in VRYOH (Phase 3 EIP→RDA signal enrichment had to retrofit fields that should have been planned from the start).
+
 Source of Truth
 Plain-language: The one place everyone agrees is "what's actually real" when two records disagree. If your notes say one thing and the live system does another, the source of truth wins, automatically, no debate.
 In VRYOH: Your Instruction 6 ("Source Hierarchy for Verification") IS a source-of-truth rule — it says live n8n JSON beats any HOW document. You already invented this concept before knowing its name.
 Why it matters: Every documented doc/live mismatch in VRYOH (BRA 19 vs 24 nodes, SIA 17 vs 18) happened because there wasn't a firm source-of-truth rule from day one — docs and reality drifted apart independently.
+
 Schema
 Plain-language: The blueprint of a database table: what columns exist, what type of data each holds (text, number, date), and what each column's internal ID is.
 In VRYOH: Every NocoDB table ID and field ID in your memory (e.g., EIP's "Enriched Emotion Tag c1aphddit5x0ylc") is a schema entry. You've been managing schema correctly by instinct — the checklist just wants it centralized as a Schema Registry from day one instead of assembled gradually.
 Why it matters: A schema that lives only in scattered chat history is fragile — you found this out when node counts and field lists needed reconstruction from memory rather than being readable in one place.
+
 Agent (in this context)
 Plain-language: One discrete step or worker in your pipeline that does one job — takes some input, does something to it (often using an LLM), and passes output to the next step. Not a robot; think of it as one employee on an assembly line who only does one task.
 In VRYOH: Your 8 agents (ALA through MRA) are exactly this. But your own memory admits the definition of "agent" was inconsistent across them — ALA is mostly deterministic code with no LLM call at all, while BRA is an LLM call plus a template library plus a governance check. Both got called "an agent."
 Why it matters: If "agent" means different things in different places, it becomes hard to estimate build time or compare complexity across agents — which is exactly the confusion Checklist item 24 is trying to prevent next time.
+
 Minimum Viable Agent Count
 Plain-language: The smallest number of pipeline steps you actually need to produce your two real outputs — as opposed to the number of steps that feels thorough or feels like "doing it properly."
 In VRYOH: This is the exact question raised earlier in this conversation: only 2 of your 8 agents (BRA/RDA for drafting, MRA for reporting) are strictly required to produce VRYOH's two outputs. The other 5 exist for signal-quality refinement — a deliberate choice, not a mistake, but one that should be named explicitly next time, not discovered in hindsight.
 Why it matters: Knowing which agents are load-bearing versus refinement lets you make honest tradeoffs between speed-to-market and signal quality, instead of building all of it by default.
+
 Governance Gate / Checkpoint
 Plain-language: A hard stop built into the code itself — not just an instruction you hope the AI follows — that blocks bad output from moving forward unless a specific condition is met.
 In VRYOH: Your "detect, never prescribe" principle needed exactly this. BRA's Step 9b (the dignity/trust check before Step 10) was meant to be this gate — but you've documented that its condition checks the wrong field, so it rarely fires correctly. The checklist wants you to name the enforcing node AND verify it actually works, not just that it exists.
 Why it matters: A governance rule that lives only in a prompt ("please don't do X") can be argued around by the LLM under enough context pressure. A governance rule enforced by code logic cannot — this is the core reason multi-agent pipelines are used for compliance-sensitive products at all.
+
 Data Retention Policy
 Plain-language: A written rule for how long you keep data, and what happens to it after — delete it, archive it, anonymize it. Not a default the software gives you; a decision you make.
 In VRYOH: VRYOH stores guest names and review text indefinitely with no documented retention rule anywhere in memory. This is a genuine open gap, not something already solved and just unnamed.
 Why it matters: Hospitality guests didn't opt into indefinite storage of their complaints. Beyond ethics, most US states and the EU have real legal requirements here — this is one of the few checklist items that's a legal risk, not just a technical one.
+
 Multi-Tenancy / Data Isolation
 Plain-language: The guarantee that Client A's data can never leak into Client B's report, dashboard, or email — even by accident, even under a bug.
 In VRYOH: Every one of your queries currently filters by Client ID correctly, as far as documented — but there's no test that deliberately TRIES to break this and confirms it can't. It's assumed correct because it's coded correctly, not proven correct under adversarial testing.
 Why it matters: As you scale past AJI-001 to 10 real client locations, a single missed Client ID filter in any of 8 agents becomes a real data-privacy incident, not just a bug.
+
 Vendor Dependency Risk
 Plain-language: What breaks in your system if a company you rely on (OpenAI, Anthropic) changes prices, has an outage, or discontinues a model you're using — and whether you have a backup plan.
 In VRYOH: VRYOH has zero documented fallback if gpt-5.2 or claude-sonnet-4-6 becomes unavailable mid-scheduled-run. A scheduled SIA or MRA run failing silently during a vendor outage is a real, currently-unprotected scenario.
